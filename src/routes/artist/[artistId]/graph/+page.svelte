@@ -40,18 +40,22 @@
     artistStack.subscribe((stack) => {
         if (!graph) return;
         const { nodes } = graph.graphData();
-        let newNodes: ArtistNode[] = nodes.filter((n) =>
-            stack.find((s) => s.artist.name === n.id)
-        ) as ArtistNode[];
+        let newNodes: ArtistNode[] = [];
         let newEdges: LinkObject[] = [];
         for (const a of stack) {
             if (!newNodes.find((n) => n.id === a.artist.name)) {
-                newNodes.push(artistToNode(a.artist));
+                const oldNode = nodes.find((n) => n.id === a.artist.name) as ArtistNode;
+                if (oldNode) newNodes.push(oldNode);
+                else newNodes.push(artistToNode(a.artist));
             }
 
             for (const similar of a.similarArtists) {
                 if (!newNodes.find((n) => n.id === similar.name)) {
-                    newNodes.push(artistToNode(similar));
+                    const oldNode = nodes.find(
+                        (n) => n.id === similar.name
+                    ) as ArtistNode;
+                    if (oldNode) newNodes.push(oldNode);
+                    else newNodes.push(artistToNode(similar));
                 }
 
                 if (
@@ -74,6 +78,28 @@
     }
 
     onMount(() => {
+        let newNodes: ArtistNode[] = [];
+        let newEdges: LinkObject[] = [];
+        for (const a of $artistStack) {
+            if (!newNodes.find((n) => n.id === a.artist.name)) {
+                newNodes.push(artistToNode(a.artist));
+            }
+
+            for (const similar of a.similarArtists) {
+                if (!newNodes.find((n) => n.id === similar.name)) {
+                    newNodes.push(artistToNode(similar));
+                }
+
+                if (
+                    !newEdges.find(
+                        (n) => n.source === a.artist.name && n.target === similar.name
+                    )
+                ) {
+                    newEdges.push({ source: a.artist.name, target: similar.name });
+                }
+            }
+        }
+
         graph = ForceGraph();
         graph
             .nodeCanvasObject((node, ctx, globalScale) => {
@@ -111,6 +137,7 @@
             })
             .linkDirectionalArrowLength(2)
             .linkDirectionalArrowRelPos(0.75)
+            .graphData({ nodes: newNodes, links: newEdges })
             .onEngineStop(() => {
                 if (!selectedNode) return;
                 graph?.centerAt(selectedNode.x, selectedNode.y, 1000);
