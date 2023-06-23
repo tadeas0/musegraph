@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { getArtistsByName } from "$lib/DBPediaClient";
     import type { Artist } from "$lib/types/Artist";
     import MdSearch from "svelte-icons/md/MdSearch.svelte";
     import MdAutorenew from "svelte-icons/md/MdAutorenew.svelte";
@@ -18,7 +17,7 @@
 </script>
 
 <div class="flex flex-col items-center">
-    <div class="max-w-5xl">
+    <div class="mt-20 max-w-5xl">
         <form on:submit={search} class="flex flex-row">
             <input
                 class="rounded-l-md border-2 border-blue-400 p-2 outline-none"

@@ -7,29 +7,30 @@
     import { quartOut } from "svelte/easing";
     import { tick } from "svelte";
     import { fetchArtist } from "$lib/api";
+    import { getContext } from "svelte";
+    import { ARTIST_STACK_KEY } from "$lib/constants.js";
+    import type { ArtistStackStore } from "$lib/stores/ArtistStackStore.js";
+    import { page } from "$app/stores";
+    import Spinner from "$lib/Spinner.svelte";
 
-    interface StackState {
-        artist: Artist;
-        similarArtists: Artist[];
-    }
-
-    export let data: StackState;
-    let stepsStack: StackState[] = [data];
     let transitionDir = 1;
+    let loading = false;
+    const artistStackStore = getContext<ArtistStackStore>(ARTIST_STACK_KEY);
 
-    $: currentStep = stepsStack.at(-1);
+    $: currentStep = $artistStackStore.at(-1);
 
     async function handleArtistClick(artist: Artist) {
         stopAudio();
+        loading = true;
         const data = await fetchArtist(artist.dbpediaUrl, fetch);
-        stepsStack = [...stepsStack, data];
+        artistStackStore.add(data);
+        loading = false;
     }
 
     async function handlePreviousClick() {
         transitionDir = -1;
-        stepsStack.pop();
-        stepsStack = stepsStack;
         stopAudio();
+        artistStackStore.popLast();
         await tick();
         transitionDir = 1;
     }
@@ -39,12 +40,13 @@
     <div class="mb-6 flex w-full flex-row justify-between">
         <button
             class="flex flex-row items-center underline disabled:text-slate-400 disabled:no-underline"
-            disabled={stepsStack.length <= 1}
+            disabled={$artistStackStore.length <= 1}
             on:click={handlePreviousClick}
         >
             <div class="h-4"><MdArrowBack /></div>
             previous
         </button>
+        <a class="underline" href={`/artist/${$page.params.artistId}/graph`}>graph</a>
         <a class="underline" href="/">back to search</a>
     </div>
     {#if currentStep}
@@ -63,7 +65,17 @@
                     easing: quartOut
                 }}
             >
-                <div class="w-full">
+                <div class="relative w-full">
+                    {#if loading}
+                        <div
+                            role="status"
+                            class="absolute flex h-full w-full justify-center bg-white bg-opacity-70"
+                        >
+                            <div class="mt-64 h-20 w-20">
+                                <Spinner />
+                            </div>
+                        </div>
+                    {/if}
                     <ArtistCard artist={currentStep.artist} />
                     <h1 class="mb-4 mt-8 text-2xl">Similar artists</h1>
                     {#each currentStep.similarArtists as a}

@@ -80,22 +80,18 @@
             <div class="mt-1 text-xs text-slate-600">{displayGenres}</div>
         </button>
         <button
-            class:bg-red-500={!canPlay}
-            class:bg-blue-400={canPlay}
-            disabled={loading || !canPlay}
-            class="col-span-1 w-10 rounded-md p-1 text-white shadow-md shadow-slate-500 outline-none"
+            disabled={!canPlay}
+            class="col-span-1 w-10 rounded-md bg-blue-400 p-1 text-white shadow-md shadow-slate-500 outline-none disabled:bg-gray-400 disabled:shadow-none"
             on:click={playPreview}
         >
             {#if playing}
                 <MdPause />
-            {:else if !canPlay}
-                <MdDoNotDisturb />
             {:else}
                 <MdPlayArrow />
             {/if}
         </button>
         <button
-            class="w-10 rounded-md bg-blue-400 p-1.5 text-white shadow-md shadow-slate-500 disabled:bg-gray-400"
+            class="w-10 rounded-md bg-blue-400 p-1.5 text-white shadow-md shadow-slate-500 disabled:bg-gray-400 disabled:shadow-none"
             disabled={!loading && spotifyData === null}
             on:click={() => {
                 if (spotifyData) {
