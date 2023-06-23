@@ -73,6 +73,6 @@
     });
 </script>
 
-<div class="h-[90vh]">
-    <div class="h-full border-2" bind:this={graphContainer} />
+<div class="h-[85vh] w-screen border-b-2">
+    <div class="h-full" bind:this={graphContainer} />
 </div>
