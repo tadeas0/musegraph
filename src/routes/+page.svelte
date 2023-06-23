@@ -43,7 +43,7 @@
         <div>
             {#each foundArtists as a}
                 <div class="border-b-2 border-blue-200 p-4">
-                    <a href={`/artist/${btoa(a.dbpediaUrl)}`}>{a.name}</a>
+                    <a href={`/artist/${btoa(a.dbpediaUrl)}/graph`}>{a.name}</a>
                 </div>
             {/each}
         </div>

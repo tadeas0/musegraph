@@ -27,68 +27,51 @@
 
     $: selectedNode = graph
         ?.graphData()
-        .nodes.find((n) => n.id === $artistStack.at(-1)?.artist.name) as ArtistNode;
+        .nodes.find((n) => n.id === $artistStack.at(-1)?.artist.name) as
+        | ArtistNode
+        | undefined;
 
     const artistStack = getContext<ArtistStackStore>(ARTIST_STACK_KEY);
+
+    function artistToNode(artist: Artist): ArtistNode {
+        return { id: artist.name, artist: artist };
+    }
+
+    artistStack.subscribe((stack) => {
+        if (!graph) return;
+        const { nodes, links } = graph.graphData();
+        let newNodes: ArtistNode[] = nodes as ArtistNode[];
+        let newEdges: LinkObject[] = links;
+        for (const a of stack) {
+            if (!newNodes.find((n) => n.id === a.artist.name)) {
+                newNodes.push(artistToNode(a.artist));
+            }
+
+            for (const similar of a.similarArtists) {
+                if (!newNodes.find((n) => n.id === similar.name)) {
+                    newNodes.push(artistToNode(similar));
+                }
+
+                if (
+                    !newEdges.find(
+                        (n) => n.source === a.artist.name && n.target === similar.name
+                    )
+                ) {
+                    newEdges.push({ source: a.artist.name, target: similar.name });
+                }
+            }
+        }
+
+        graph.graphData({ nodes: newNodes, links: newEdges });
+    });
 
     async function handleArtistClick(artist: Artist) {
         if (!graph) return;
         const data = await fetchArtist(artist.dbpediaUrl, fetch);
         artistStack.add(data);
-        const { links } = graph.graphData();
-        const nodes = graph.graphData().nodes as ArtistNode[];
-        const exNode = nodes.find((n) => n.id === data.artist.name);
-        if (!exNode) {
-            nodes.push({ id: data.artist.name, artist: data.artist });
-        }
-        const newNodes: ArtistNode[] = data.similarArtists
-            .map((s) => ({
-                id: s.name,
-                artist: s
-            }))
-            .filter((s) => !nodes.find((n) => n.id === s.id));
-        const newEdges: LinkObject[] = data.similarArtists
-            .map((s) => ({
-                source: data.artist.name,
-                target: s.name
-            }))
-            .filter(
-                (s) => !links.find((l) => l.source === s.source && l.target === s.target)
-            );
-        graph.graphData({
-            links: [...links, ...newEdges],
-            nodes: [...nodes, ...newNodes]
-        });
     }
 
     onMount(() => {
-        const nodes: ArtistNode[] = [];
-        const edges: LinkObject[] = [];
-
-        for (const a of $artistStack) {
-            const newNode = nodes.find((n) => n.id === a.artist.name);
-            if (!newNode) {
-                nodes.push({
-                    id: a.artist.name,
-                    artist: a.artist
-                });
-            }
-            for (const s of a.similarArtists) {
-                const exEdge = edges.find((n) => {
-                    n.source === a.artist.name && n.target === s.name;
-                });
-                const exNode = nodes.find((n: any) => n.id === s.name);
-                if (!exEdge) {
-                    edges.push({
-                        source: a.artist.name,
-                        target: s.name
-                    });
-                }
-                if (!exNode) {
-                    nodes.push({ id: s.name, artist: s });
-                }
-            }
-        }
         graph = ForceGraph();
         graph
             .nodeCanvasObject((node, ctx, globalScale) => {
@@ -116,7 +99,6 @@
                     ctx.fillText(label, x, y - 32 / globalScale);
                 }
             })
-            .graphData({ nodes: nodes, links: edges })
             .cooldownTicks(50)
             .d3Force("center", null)
             .width(graphContainer.clientWidth)
@@ -128,6 +110,7 @@
             .linkDirectionalArrowLength(2)
             .linkDirectionalArrowRelPos(0.75)
             .onEngineStop(() => {
+                if (!selectedNode) return;
                 graph?.centerAt(selectedNode.x, selectedNode.y, 1000);
                 if (!finishedFirstZoom) {
                     graph?.zoom(4, 1000);
@@ -137,6 +120,7 @@
     });
 
     function handleReset() {
+        if (!selectedNode) return;
         graph?.centerAt(selectedNode.x, selectedNode.y, 1000);
         graph?.zoom(4, 1000);
     }
