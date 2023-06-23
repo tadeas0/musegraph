@@ -90,16 +90,14 @@
                 <MdPlayArrow />
             {/if}
         </button>
-        <button
-            class="w-10 rounded-md bg-blue-400 p-1.5 text-white shadow-md shadow-slate-500 disabled:bg-gray-400 disabled:shadow-none"
-            disabled={!loading && spotifyData === null}
-            on:click={() => {
-                if (spotifyData) {
-                    goto(spotifyData.artistUrl);
-                }
-            }}
+        <a
+            class="w-10 rounded-md bg-blue-400 p-1.5 text-white shadow-md shadow-slate-500"
+            class:bg-gray-400={!loading && spotifyData === null}
+            class:shadow-none={!loading && spotifyData === null}
+            href={spotifyData?.artistUrl}
+            target="_blank"
         >
             <FaSpotify />
-        </button>
+        </a>
     </div>
 </div>
