@@ -39,9 +39,11 @@
 
     artistStack.subscribe((stack) => {
         if (!graph) return;
-        const { nodes, links } = graph.graphData();
-        let newNodes: ArtistNode[] = nodes as ArtistNode[];
-        let newEdges: LinkObject[] = links;
+        const { nodes } = graph.graphData();
+        let newNodes: ArtistNode[] = nodes.filter((n) =>
+            stack.find((s) => s.artist.name === n.id)
+        ) as ArtistNode[];
+        let newEdges: LinkObject[] = [];
         for (const a of stack) {
             if (!newNodes.find((n) => n.id === a.artist.name)) {
                 newNodes.push(artistToNode(a.artist));
