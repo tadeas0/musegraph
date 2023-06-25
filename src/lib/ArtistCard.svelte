@@ -3,13 +3,12 @@
     import type { Artist } from "./types/Artist";
     import MdPlayArrow from "svelte-icons/md/MdPlayArrow.svelte";
     import MdPause from "svelte-icons/md/MdPause.svelte";
-    import MdDoNotDisturb from "svelte-icons/md/MdDoNotDisturb.svelte";
     import { playingAudio } from "./stores/AudioStore";
     import FaSpotify from "svelte-icons/fa/FaSpotify.svelte";
     import { fetchSpotifyData } from "./api";
     import type { SpotifyData } from "./types/SpotifyData";
     import { goto } from "$app/navigation";
-    import { onMount } from "svelte";
+    import Spinner from "./Spinner.svelte";
 
     export let artist: Artist;
 
@@ -22,6 +21,16 @@
         "https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_640.png";
     $: displayGenres = artist.genres.slice(0, maxGenresDisplay).join(", ");
     $: playing = $playingAudio && $playingAudio === audio;
+    $: {
+        loading = true;
+        fetchSpotifyData(artist.name, fetch)
+            .then((data) => (spotifyData = data))
+            .catch((e) => {
+                canPlay = false;
+                spotifyData = null;
+            })
+            .finally(() => (loading = false));
+    }
 
     const dispatch = createEventDispatcher();
 
@@ -40,36 +49,33 @@
             audio.play();
         }
     }
-
-    onMount(async () => {
-        try {
-            loading = true;
-            spotifyData = await fetchSpotifyData(artist.name, fetch);
-        } catch (e) {
-            canPlay = false;
-            spotifyData = null;
-        } finally {
-            loading = false;
-        }
-    });
 </script>
 
 <div class="hover:bg-slate-200 lg:px-3">
     <div class="flex h-16 w-full items-center justify-start gap-6">
-        <button
-            disabled={spotifyData === null}
-            on:click={() => {
-                if (spotifyData) {
-                    goto(spotifyData.artistUrl);
-                }
-            }}
-        >
-            <img
-                class="h-auto w-14 rounded-full"
-                src={spotifyData?.image || imagePlaceholder}
-                alt="artist"
-            />
-        </button>
+        <div class="relative">
+            <button
+                disabled={spotifyData === null}
+                on:click={() => {
+                    if (spotifyData) {
+                        goto(spotifyData.artistUrl);
+                    }
+                }}
+            >
+                <img
+                    class="h-14 w-14 rounded-full"
+                    src={spotifyData?.image || imagePlaceholder}
+                    alt="artist"
+                />
+            </button>
+            {#if loading}
+                <div
+                    class="absolute left-0 top-0 flex h-14 w-full justify-center rounded-full bg-white bg-opacity-80"
+                >
+                    <Spinner />
+                </div>
+            {/if}
+        </div>
         <button
             class="w-full overflow-hidden py-3 text-left"
             on:click={() => dispatch("clickArtist", artist)}
