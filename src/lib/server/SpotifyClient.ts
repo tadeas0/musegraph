@@ -1,5 +1,6 @@
 import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from "$env/static/private";
 import { randInt } from "$lib/common";
+import type { Song } from "$lib/types/Song";
 import type { SpotifyData } from "$lib/types/SpotifyData";
 import SpotifyWebApi from "spotify-web-api-node";
 
@@ -20,19 +21,19 @@ export async function getSpotifyData(artist: string): Promise<SpotifyData | null
 
     // Filter out tracks without previews
     const target = topTracks.filter((t) => t.preview_url !== null);
-    if (target.length === 0) {
-        return null;
+    let song: Song | undefined = undefined;
+    if (target.length > 0) {
+        const t = target[randInt(0, target.length)];
+        song = {
+            name: t.name,
+            previewUrl: t.preview_url as string,
+            spotifyUrl: t.uri
+        };
     }
-
-    const t = target[randInt(0, target.length)];
 
     return {
         artistUrl: spotArtist.external_urls.spotify,
         image: spotArtist.images.at(-1)?.url,
-        song: {
-            name: t.name,
-            previewUrl: t.preview_url as string,
-            spotifyUrl: t.uri
-        }
+        song: song
     };
 }

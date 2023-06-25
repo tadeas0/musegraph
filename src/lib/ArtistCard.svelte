@@ -43,7 +43,7 @@
             return;
         }
 
-        if (!audio && spotifyData) {
+        if (!audio && spotifyData?.song) {
             audio = new Audio(spotifyData.song.previewUrl);
             $playingAudio = audio;
             audio.play();
@@ -86,7 +86,7 @@
             <div class="mt-1 text-xs text-slate-600">{displayGenres}</div>
         </button>
         <button
-            disabled={!canPlay}
+            disabled={!canPlay || spotifyData?.song === undefined}
             class="col-span-1 w-10 rounded-md bg-blue-400 p-1 text-white shadow-md shadow-slate-500 outline-none disabled:bg-gray-400 disabled:shadow-none"
             on:click={playPreview}
         >
