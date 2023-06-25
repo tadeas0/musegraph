@@ -53,7 +53,7 @@
 
 <div class="hover:bg-slate-200 lg:px-3">
     <div class="flex h-16 w-full items-center justify-start gap-6">
-        <div class="relative">
+        <div class="relative flex h-14 w-14 justify-center">
             <button
                 disabled={spotifyData === null}
                 on:click={() => {
@@ -63,14 +63,14 @@
                 }}
             >
                 <img
-                    class="h-14 w-14 rounded-full"
+                    class="block h-auto w-full rounded-md"
                     src={spotifyData?.image || imagePlaceholder}
                     alt="artist"
                 />
             </button>
             {#if loading}
                 <div
-                    class="absolute left-0 top-0 flex h-14 w-full justify-center rounded-full bg-white bg-opacity-80"
+                    class="absolute left-0 top-0 flex h-full w-full justify-center rounded-md bg-white bg-opacity-80"
                 >
                     <Spinner />
                 </div>
