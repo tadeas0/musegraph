@@ -17,6 +17,7 @@
 
     interface ArtistNode extends NodeObject {
         artist: Artist;
+        discovered: boolean;
     }
 
     const ZOOM_AMOUNT = 0.5;
@@ -33,8 +34,8 @@
 
     const artistStack = getContext<ArtistStackStore>(ARTIST_STACK_KEY);
 
-    function artistToNode(artist: Artist): ArtistNode {
-        return { id: artist.name, artist: artist };
+    function artistToNode(artist: Artist, discovered = false): ArtistNode {
+        return { id: artist.name, artist: artist, discovered: discovered };
     }
 
     artistStack.subscribe((stack) => {
@@ -111,7 +112,10 @@
                 ctx.font = `${fontSize}px Sans-Serif`;
 
                 if (selectedNode === artistNode) {
+                    artistNode.discovered = true;
                     ctx.fillStyle = colors.amber[300];
+                } else if (artistNode.discovered) {
+                    ctx.fillStyle = colors.blue[200];
                 } else {
                     ctx.fillStyle = colors.blue[400];
                 }
@@ -133,6 +137,7 @@
             .height(graphContainer.clientHeight)
             .onNodeClick((node) => {
                 if (!graph) return;
+                (node as ArtistNode).discovered = true;
                 handleArtistClick((node as ArtistNode).artist);
             })
             .linkDirectionalArrowLength(2)
