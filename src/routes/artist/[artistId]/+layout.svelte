@@ -7,7 +7,7 @@
     import { page } from "$app/stores";
     import MdArrowBack from "svelte-icons/md/MdArrowBack.svelte";
     import { stopAudio } from "$lib/stores/AudioStore";
-    import ArtistCard from "$lib/ArtistCard.svelte";
+    import ArtistCard from "$lib/components/ArtistCard.svelte";
 
     export let data: LayoutData;
 

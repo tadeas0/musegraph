@@ -1,12 +1,12 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
-    import type { Artist } from "./types/Artist";
+    import type { Artist } from "../types/Artist";
     import MdPlayArrow from "svelte-icons/md/MdPlayArrow.svelte";
     import MdPause from "svelte-icons/md/MdPause.svelte";
-    import { playingAudio } from "./stores/AudioStore";
+    import { playingAudio } from "../stores/AudioStore";
     import FaSpotify from "svelte-icons/fa/FaSpotify.svelte";
-    import { fetchSpotifyData } from "./api";
-    import type { SpotifyData } from "./types/SpotifyData";
+    import { fetchSpotifyData } from "../api";
+    import type { SpotifyData } from "../types/SpotifyData";
     import { goto } from "$app/navigation";
     import Spinner from "./Spinner.svelte";
 

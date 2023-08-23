@@ -1,5 +1,5 @@
 <script lang="ts">
-    import ArtistCard from "$lib/ArtistCard.svelte";
+    import ArtistCard from "$lib/components/ArtistCard.svelte";
     import type { Artist } from "$lib/types/Artist";
     import { stopAudio } from "$lib/stores/AudioStore";
     import { fly } from "svelte/transition";
@@ -8,7 +8,7 @@
     import { getContext } from "svelte";
     import { ARTIST_STACK_KEY } from "$lib/constants.js";
     import type { ArtistStackStore } from "$lib/stores/ArtistStackStore.js";
-    import Spinner from "$lib/Spinner.svelte";
+    import Spinner from "$lib/components/Spinner.svelte";
 
     let loading = false;
     const artistStackStore = getContext<ArtistStackStore>(ARTIST_STACK_KEY);
