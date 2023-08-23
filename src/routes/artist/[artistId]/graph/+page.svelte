@@ -103,7 +103,7 @@
         <div
             class="absolute left-0 top-0 z-20 flex h-full w-full justify-center bg-white bg-opacity-80"
         >
-            <div class="mt-52 w-10">
+            <div class="mt-52 w-20">
                 <Spinner />
             </div>
         </div>

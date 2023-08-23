@@ -44,7 +44,7 @@
                 {#if loading}
                     <div
                         role="status"
-                        class="absolute flex h-full w-full justify-center bg-white bg-opacity-70"
+                        class="absolute z-20 flex h-full w-full justify-center bg-white bg-opacity-70"
                     >
                         <div class="mt-64 h-20 w-20">
                             <Spinner />
