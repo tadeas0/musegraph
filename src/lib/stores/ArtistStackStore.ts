@@ -1,10 +1,7 @@
-import type { Artist } from "$lib/types/Artist";
+import type { ArtistSimilar } from "$lib/types/ArtistSimilar";
 import { writable } from "svelte/store";
 
-interface StackState {
-    artist: Artist;
-    similarArtists: Artist[];
-}
+type StackState = ArtistSimilar;
 
 export function createArtistStack() {
     const { subscribe, set, update } = writable<StackState[]>([]);
