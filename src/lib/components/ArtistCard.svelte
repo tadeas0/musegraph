@@ -8,7 +8,7 @@
     import { fetchSpotifyData } from "../api";
     import type { SpotifyData } from "../types/SpotifyData";
     import { goto } from "$app/navigation";
-    import Spinner from "./Spinner.svelte";
+    import LoadingOverlay from "./LoadingOverlay.svelte";
 
     export let artist: Artist;
 
@@ -69,11 +69,7 @@
                 />
             </button>
             {#if loading}
-                <div
-                    class="absolute left-0 top-0 flex h-full w-full justify-center rounded-md bg-white bg-opacity-80"
-                >
-                    <Spinner />
-                </div>
+                <LoadingOverlay />
             {/if}
         </div>
         <button

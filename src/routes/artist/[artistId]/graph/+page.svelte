@@ -6,9 +6,9 @@
     import type { Artist } from "$lib/types/Artist";
     import Graph, { type GraphEdge, type GraphNode } from "$lib/components/Graph.svelte";
     import type { ArtistSimilar } from "$lib/types/ArtistSimilar";
-    import Spinner from "$lib/components/Spinner.svelte";
     import { goto } from "$app/navigation";
     import colors from "tailwindcss/colors";
+    import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
 
     const artistStack = getContext<ArtistStackStore>(ARTIST_STACK_KEY);
 
@@ -100,13 +100,7 @@
 
 <div class="relative h-[85vh] w-screen border-b-2">
     {#if loading}
-        <div
-            class="absolute left-0 top-0 z-20 flex h-full w-full justify-center bg-white bg-opacity-80"
-        >
-            <div class="mt-52 w-20">
-                <Spinner />
-            </div>
-        </div>
+        <LoadingOverlay />
     {/if}
     <Graph
         {nodes}

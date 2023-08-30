@@ -40,8 +40,8 @@
             previous
         </button>
         <a class="underline" href={`/artist/${$page.params.artistId}/graph`}>graph</a>
-        <a class="underline" href={`/artist/${$page.params.artistId}`}>similar artists</a>
-        <a class="underline" href="/">back to search</a>
+        <a class="underline" href={`/artist/${$page.params.artistId}`}>list</a>
+        <a class="underline" href="/">search</a>
     </div>
     {#if currentStep?.artist}
         <div class="mb-2 w-full border-b-2 lg:w-4/6">

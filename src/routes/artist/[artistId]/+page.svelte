@@ -8,7 +8,7 @@
     import { getContext } from "svelte";
     import { ARTIST_STACK_KEY } from "$lib/constants.js";
     import type { ArtistStackStore } from "$lib/stores/ArtistStackStore.js";
-    import Spinner from "$lib/components/Spinner.svelte";
+    import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
 
     let loading = false;
     const artistStackStore = getContext<ArtistStackStore>(ARTIST_STACK_KEY);
@@ -42,14 +42,7 @@
         >
             <div class="relative w-full">
                 {#if loading}
-                    <div
-                        role="status"
-                        class="absolute z-20 flex h-full w-full justify-center bg-white bg-opacity-70"
-                    >
-                        <div class="mt-64 h-20 w-20">
-                            <Spinner />
-                        </div>
-                    </div>
+                    <LoadingOverlay />
                 {/if}
                 <h1 class="mb-4 mt-8 text-2xl">Similar artists</h1>
                 {#each currentStep.similarArtists as a}

@@ -3,20 +3,30 @@
     import MdSearch from "svelte-icons/md/MdSearch.svelte";
     import MdAutorenew from "svelte-icons/md/MdAutorenew.svelte";
     import { fetchArtistsByName } from "$lib/api";
+    import { navigating } from "$app/stores";
+    import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
 
     let artistName = "";
     let foundArtists: Artist[] = [];
     let loading = false;
 
     async function search() {
-        loading = true;
-        const data = await fetchArtistsByName(artistName, fetch);
-        foundArtists = data.artists;
-        loading = false;
+        try {
+            loading = true;
+            const data = await fetchArtistsByName(artistName, fetch);
+            foundArtists = data.artists;
+        } catch (err) {
+            console.error(err);
+        } finally {
+            loading = false;
+        }
     }
 </script>
 
-<div class="flex flex-col items-center">
+<div class="relative flex flex-col items-center">
+    {#if $navigating}
+        <LoadingOverlay />
+    {/if}
     <div class="mt-20 max-w-5xl">
         <form on:submit={search} class="flex flex-row">
             <input
