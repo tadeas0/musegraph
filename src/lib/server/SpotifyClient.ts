@@ -11,11 +11,22 @@ export async function getSpotifyData(artist: string): Promise<SpotifyData | null
     });
     const authRes = await spotify.clientCredentialsGrant();
     spotify.setAccessToken(authRes.body["access_token"]);
-    const artistRes = await spotify.searchArtists(artist);
-    const spotArtist = artistRes.body.artists?.items[0];
-    if (!spotArtist) {
+    const artistRes = await spotify.searchArtists(`artist:${artist}`, { market: "GB" });
+    if (!artistRes.body.artists?.items[0]) {
         return null;
     }
+
+    const items = artistRes.body.artists?.items;
+    items?.sort((i1, i2) => i2.followers.total - i1.followers.total);
+
+    // Pick artist, that matches query exactly, otherwise pick the one with most followers
+    let spotArtist = artistRes.body.artists?.items.find(
+        (i) => i.name.toLowerCase() === artist.toLowerCase()
+    );
+    if (spotArtist === undefined) {
+        spotArtist = artistRes.body.artists?.items[0];
+    }
+
     const trackRes = await spotify.getArtistTopTracks(spotArtist.id, "GB");
     const topTracks = trackRes.body.tracks;
 

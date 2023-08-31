@@ -4,6 +4,7 @@
         name: string;
         color?: string | CanvasGradient | CanvasPattern;
         data: N;
+        alwaysShowLabel: boolean;
     }
 
     export interface GraphEdge<E> extends LinkObject {
@@ -76,16 +77,16 @@
                 } else {
                     ctx.fillStyle = graphNode.color;
                 }
-                const radius = Math.min(24 / globalScale, 6);
+                const radius = Math.min(12 / globalScale, 6);
                 ctx.beginPath();
                 ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
                 ctx.fill();
 
-                if (selectedNodeId === graphNode.id || globalScale > 1.5) {
+                if (graphNode.alwaysShowLabel || globalScale > 2.5) {
                     ctx.textAlign = "center";
                     ctx.textBaseline = "middle";
                     ctx.fillStyle = colors.black;
-                    ctx.fillText(label, x, y - 32 / globalScale);
+                    ctx.fillText(label, x, y - 24 / globalScale);
                 }
             })
             .cooldownTicks(50)

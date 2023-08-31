@@ -39,7 +39,7 @@
             }
 
             if (!nodes.find((n) => n.id === id)) {
-                nodes.push({ id, name, data, color });
+                nodes.push({ id, name, data, color, alwaysShowLabel: true });
             }
         }
 
@@ -56,7 +56,8 @@
                         id: srcId,
                         name: srcArtist.name,
                         data: srcArtist,
-                        color: color
+                        color: color,
+                        alwaysShowLabel: false
                     });
                 }
                 if (!nodes.find((n) => n.id === tgtId)) {
@@ -64,7 +65,8 @@
                         id: tgtId,
                         name: tgtArtist.name,
                         data: tgtArtist,
-                        color: color
+                        color: color,
+                        alwaysShowLabel: false
                     });
                 }
                 edges.push({ source: srcId, target: tgtId, data: {} });
@@ -93,7 +95,7 @@
             }
         } catch (err) {
             console.error(err);
-            toast("Could not get artist.", "error");
+            toast("Could not get artist. Please try again.", "error");
         } finally {
             loading = false;
         }
