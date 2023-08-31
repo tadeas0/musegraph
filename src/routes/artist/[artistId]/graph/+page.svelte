@@ -83,11 +83,11 @@
             const oldArtist = $artistStack.find((a) => a.artist.name === artist.name);
             if (!oldArtist) {
                 const data = await fetchArtist(artist.dbpediaUrl, fetch);
-                artistStack.add(data);
                 goto(`/artist/${btoa(data.artist.dbpediaUrl)}/graph`);
+                artistStack.add(data);
             } else {
-                artistStack.add(oldArtist);
                 goto(`/artist/${btoa(oldArtist.artist.dbpediaUrl)}/graph`);
+                artistStack.add(oldArtist);
             }
         } catch (err) {
             console.error(err);
@@ -98,7 +98,7 @@
     }
 </script>
 
-<div class="relative h-[85vh] w-screen border-b-2">
+<div class="relative w-full flex-auto">
     {#if loading}
         <LoadingOverlay />
     {/if}
