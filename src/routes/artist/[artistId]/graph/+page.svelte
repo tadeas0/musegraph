@@ -1,7 +1,4 @@
 <script lang="ts">
-    import { ARTIST_STACK_KEY } from "$lib/constants";
-    import type { ArtistStackStore } from "$lib/stores/ArtistStackStore";
-    import { getContext } from "svelte";
     import { fetchArtist } from "$lib/api";
     import type { Artist } from "$lib/types/Artist";
     import Graph, { type GraphEdge, type GraphNode } from "$lib/components/Graph.svelte";
@@ -10,8 +7,7 @@
     import colors from "tailwindcss/colors";
     import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
     import { toast } from "$lib/notification";
-
-    const artistStack = getContext<ArtistStackStore>(ARTIST_STACK_KEY);
+    import { artistStack } from "$lib/stores/ArtistStackStore";
 
     const DEFAULT_NODE_COLOR = colors.blue[400];
     const DISCOVERED_NODE_COLOR = colors.blue[200];

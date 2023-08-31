@@ -5,24 +5,21 @@
     import { fly } from "svelte/transition";
     import { quartOut } from "svelte/easing";
     import { fetchArtist } from "$lib/api";
-    import { getContext } from "svelte";
-    import { ARTIST_STACK_KEY } from "$lib/constants.js";
-    import type { ArtistStackStore } from "$lib/stores/ArtistStackStore.js";
+    import { artistStack } from "$lib/stores/ArtistStackStore.js";
     import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
     import { goto } from "$app/navigation";
     import { toast } from "$lib/notification";
 
     let loading = false;
-    const artistStackStore = getContext<ArtistStackStore>(ARTIST_STACK_KEY);
 
-    $: currentStep = $artistStackStore.at(-1);
+    $: currentStep = $artistStack.at(-1);
 
     async function handleArtistClick(artist: Artist) {
         try {
             stopAudio();
             loading = true;
             const data = await fetchArtist(artist.dbpediaUrl, fetch);
-            artistStackStore.add(data);
+            artistStack.add(data);
             goto(`/artist/${btoa(artist.dbpediaUrl)}`);
         } catch (err) {
             console.error(err);

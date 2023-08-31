@@ -3,7 +3,7 @@ import { writable } from "svelte/store";
 
 type StackState = ArtistSimilar;
 
-export function createArtistStack() {
+function createArtistStack() {
     const { subscribe, set, update } = writable<StackState[]>([]);
 
     return {
@@ -15,3 +15,5 @@ export function createArtistStack() {
 }
 
 export type ArtistStackStore = ReturnType<typeof createArtistStack>;
+
+export const artistStack = createArtistStack();
