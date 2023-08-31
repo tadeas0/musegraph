@@ -5,6 +5,7 @@
     import { fetchArtistsByName } from "$lib/api";
     import { navigating } from "$app/stores";
     import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
+    import { toast } from "$lib/notification";
 
     let artistName = "";
     let foundArtists: Artist[] = [];
@@ -15,8 +16,11 @@
             loading = true;
             const data = await fetchArtistsByName(artistName, fetch);
             foundArtists = data.artists;
+            if (foundArtists.length === 0) {
+                toast("Could not find any artists matching your query.", "warn");
+            }
         } catch (err) {
-            console.error(err);
+            toast("Error while searching for artists. Please try again.", "error");
         } finally {
             loading = false;
         }
@@ -30,9 +34,10 @@
     <div class="mt-20 max-w-5xl">
         <form on:submit={search} class="flex flex-row">
             <input
-                class="rounded-l-md border-2 border-blue-400 p-2 outline-none"
+                class="rounded-l-md border-2 border-blue-400 p-2 outline-none disabled:border-gray-400"
                 placeholder="Artist"
                 bind:value={artistName}
+                disabled={loading}
             />
             <button
                 class:bg-blue-500={!loading}
