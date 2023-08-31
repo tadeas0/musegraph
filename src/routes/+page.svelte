@@ -2,14 +2,16 @@
     import type { Artist } from "$lib/types/Artist";
     import MdSearch from "svelte-icons/md/MdSearch.svelte";
     import MdAutorenew from "svelte-icons/md/MdAutorenew.svelte";
-    import { fetchArtistsByName } from "$lib/api";
-    import { navigating } from "$app/stores";
+    import { fetchArtist, fetchArtistsByName } from "$lib/api";
     import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
     import { toast } from "$lib/notification";
+    import { goto } from "$app/navigation";
+    import { artistStack } from "$lib/stores/ArtistStackStore";
 
     let artistName = "";
     let foundArtists: Artist[] = [];
     let loading = false;
+    let gettingArtist = false;
 
     async function search() {
         try {
@@ -25,10 +27,25 @@
             loading = false;
         }
     }
+
+    async function handleNavigate(dbpediaUrl: string) {
+        try {
+            gettingArtist = true;
+            const data = await fetchArtist(dbpediaUrl, fetch);
+            artistStack.clear();
+            artistStack.add(data);
+            goto(`/artist/${btoa(dbpediaUrl)}/graph`);
+        } catch (err) {
+            console.error(err);
+            toast("Could not get artist.", "error");
+        } finally {
+            gettingArtist = false;
+        }
+    }
 </script>
 
 <div class="relative flex flex-col items-center">
-    {#if $navigating}
+    {#if gettingArtist}
         <LoadingOverlay />
     {/if}
     <div class="mt-20 max-w-5xl">
@@ -58,7 +75,9 @@
         <div>
             {#each foundArtists as a}
                 <div class="border-b-2 border-blue-200 p-4">
-                    <a href={`/artist/${btoa(a.dbpediaUrl)}/graph`}>{a.name}</a>
+                    <button on:click={() => handleNavigate(a.dbpediaUrl)}>
+                        {a.name}
+                    </button>
                 </div>
             {/each}
         </div>
