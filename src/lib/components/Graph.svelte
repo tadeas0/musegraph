@@ -133,7 +133,7 @@
 </script>
 
 <div
-    class="absolute left-1/2 top-0 z-10 flex h-10 -translate-x-1/2 flex-row gap-8 text-gray-600"
+    class="absolute left-1/2 top-4 z-10 flex w-64 -translate-x-1/2 items-center gap-8 text-gray-600"
 >
     <button on:click={() => handleZoom(1 / ZOOM_AMOUNT)}><MdZoomIn /></button>
     <button on:click={() => handleZoom(ZOOM_AMOUNT)}><MdZoomOut /></button>

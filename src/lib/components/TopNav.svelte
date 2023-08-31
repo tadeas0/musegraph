@@ -2,8 +2,8 @@
     import { page } from "$app/stores";
 </script>
 
-<div class="flex w-full flex-row justify-between">
+<nav class="flex w-full flex-row justify-between p-4">
     <a class="underline" href={`/artist/${$page.params.artistId}/graph`}>graph</a>
     <a class="underline" href={`/artist/${$page.params.artistId}`}>list</a>
     <a class="underline" href="/">search</a>
-</div>
+</nav>

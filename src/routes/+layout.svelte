@@ -4,8 +4,8 @@
     import "../app.css";
 </script>
 
-<main class="flex h-screen flex-col items-center gap-2 p-4">
-    <Toast />
-    <TopNav />
+<Toast />
+<TopNav />
+<main class="flex h-screen flex-col items-center p-4">
     <slot />
 </main>
