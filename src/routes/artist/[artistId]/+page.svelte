@@ -9,6 +9,8 @@
     import { ARTIST_STACK_KEY } from "$lib/constants.js";
     import type { ArtistStackStore } from "$lib/stores/ArtistStackStore.js";
     import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
+    import { goto } from "$app/navigation";
+    import { toast } from "$lib/notification";
 
     let loading = false;
     const artistStackStore = getContext<ArtistStackStore>(ARTIST_STACK_KEY);
@@ -16,11 +18,18 @@
     $: currentStep = $artistStackStore.at(-1);
 
     async function handleArtistClick(artist: Artist) {
-        stopAudio();
-        loading = true;
-        const data = await fetchArtist(artist.dbpediaUrl, fetch);
-        artistStackStore.add(data);
-        loading = false;
+        try {
+            stopAudio();
+            loading = true;
+            const data = await fetchArtist(artist.dbpediaUrl, fetch);
+            artistStackStore.add(data);
+            goto(`/artist/${btoa(artist.dbpediaUrl)}`);
+        } catch (err) {
+            console.error(err);
+            toast("Could not get artist. Please try again.", "error");
+        } finally {
+            loading = false;
+        }
     }
 </script>
 
