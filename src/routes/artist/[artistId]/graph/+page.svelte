@@ -9,6 +9,7 @@
     import { goto } from "$app/navigation";
     import colors from "tailwindcss/colors";
     import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
+    import { toast } from "$lib/notification";
 
     const artistStack = getContext<ArtistStackStore>(ARTIST_STACK_KEY);
 
@@ -92,6 +93,7 @@
             }
         } catch (err) {
             console.error(err);
+            toast("Could not get artist.", "error");
         } finally {
             loading = false;
         }
