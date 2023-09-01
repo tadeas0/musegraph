@@ -1,4 +1,4 @@
-import type { StackState } from "./stores/ArtistStackStore";
+import type { StackState } from "./stores/SessionStore";
 import type { Artist } from "./types/Artist";
 import type { Session } from "./types/Session";
 import type { SpotifyData } from "./types/SpotifyData";

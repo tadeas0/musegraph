@@ -2,7 +2,7 @@ import { kv } from "$lib/server/KVClient";
 import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import type { Session } from "$lib/types/Session";
-import type { StackState } from "$lib/stores/ArtistStackStore";
+import type { StackState } from "$lib/stores/SessionStore";
 
 export const GET: RequestHandler = async ({ params }) => {
     const session = await kv.get<Session | null>(params.sessionId);

@@ -1,4 +1,4 @@
-import type { StackState } from "$lib/stores/ArtistStackStore";
+import type { StackState } from "$lib/stores/SessionStore";
 
 export interface Session {
     id: string;

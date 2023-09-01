@@ -1,6 +1,6 @@
 import type { RequestHandler } from "./$types";
 import { error, json } from "@sveltejs/kit";
-import type { StackState } from "$lib/stores/ArtistStackStore";
+import type { StackState } from "$lib/stores/SessionStore";
 import type { Session } from "$lib/types/Session";
 import { kv } from "$lib/server/KVClient";
 

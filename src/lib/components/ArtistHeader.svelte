@@ -1,6 +1,6 @@
 <script lang="ts">
     import ArtistCard from "./ArtistCard.svelte";
-    import type { StackState } from "$lib/stores/ArtistStackStore";
+    import type { StackState } from "$lib/stores/SessionStore";
     import type { ArtistSimilar } from "$lib/types/ArtistSimilar";
     import { page } from "$app/stores";
 

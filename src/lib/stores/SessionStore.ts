@@ -1,6 +1,8 @@
 import { updateSession } from "$lib/api";
+import type { ArtistSimilar } from "$lib/types/ArtistSimilar";
 import { get, writable } from "svelte/store";
-import type { StackState } from "./ArtistStackStore";
+
+export type StackState = ArtistSimilar;
 
 export function createSessionStore(sessionId: string) {
     const store = writable<StackState[]>([]);
