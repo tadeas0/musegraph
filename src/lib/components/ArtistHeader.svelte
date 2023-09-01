@@ -1,9 +1,17 @@
-<script>
-    import { artistStack } from "$lib/stores/ArtistStackStore";
-    import { currentArtist } from "$lib/stores/CurrentArtistStore";
+<script lang="ts">
     import ArtistCard from "./ArtistCard.svelte";
+    import type { StackState } from "$lib/stores/ArtistStackStore";
+    import type { ArtistSimilar } from "$lib/types/ArtistSimilar";
 
-    $: discoveredCount = new Set($artistStack.map((a) => a.artist.dbpediaUrl)).size;
+    export let artistStack: StackState[];
+
+    const PLACEHOLDER_ARTIST: ArtistSimilar = {
+        artist: { dbpediaUrl: "", genres: [], name: "artist" },
+        similarArtists: []
+    };
+
+    $: currentArtist = artistStack.at(-1) || PLACEHOLDER_ARTIST;
+    $: discoveredCount = new Set(artistStack.map((a) => a.artist.dbpediaUrl)).size;
 </script>
 
 <div class="flex w-full flex-col lg:w-2/3">
@@ -14,6 +22,6 @@
         <a class="ml-auto underline" href="/playlist">Create playlist</a>
     </div>
     <div class="border-y-2 py-1">
-        <ArtistCard artist={$currentArtist.artist} />
+        <ArtistCard artist={currentArtist.artist} />
     </div>
 </div>

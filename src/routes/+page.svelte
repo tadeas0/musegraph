@@ -2,7 +2,7 @@
     import type { Artist } from "$lib/types/Artist";
     import MdSearch from "svelte-icons/md/MdSearch.svelte";
     import MdAutorenew from "svelte-icons/md/MdAutorenew.svelte";
-    import { fetchArtist, fetchArtistsByName } from "$lib/api";
+    import { createSession, fetchArtist, fetchArtistsByName } from "$lib/api";
     import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
     import { toast } from "$lib/notification";
     import { goto } from "$app/navigation";
@@ -34,7 +34,8 @@
             const data = await fetchArtist(dbpediaUrl, fetch);
             artistStack.clear();
             artistStack.add(data);
-            goto(`/artist/${btoa(dbpediaUrl)}/graph`);
+            const session = await createSession($artistStack);
+            goto(`/session/${session.id}`);
         } catch (err) {
             console.error(err);
             toast("Could not get artist.", "error");
