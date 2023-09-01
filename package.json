@@ -35,6 +35,7 @@
     },
     "type": "module",
     "dependencies": {
+        "@vercel/kv": "^0.2.2",
         "cytoscape": "^3.25.0",
         "force-graph": "^1.43.1",
         "spotify-web-api-node": "^5.0.2",

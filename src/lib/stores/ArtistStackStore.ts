@@ -2,7 +2,7 @@ import { browser } from "$app/environment";
 import type { ArtistSimilar } from "$lib/types/ArtistSimilar";
 import { writable } from "svelte/store";
 
-type StackState = ArtistSimilar;
+export type StackState = ArtistSimilar;
 
 function createArtistStack() {
     const { subscribe, set, update } = writable<StackState[]>([]);
@@ -50,6 +50,12 @@ function createArtistStack() {
                 localStorage.setItem(artistStackId, JSON.stringify([]));
             }
             set([]);
+        },
+        set: (state: StackState[]) => {
+            if (browser) {
+                localStorage.setItem(artistStackId, JSON.stringify(state));
+            }
+            set(state);
         }
     };
 }

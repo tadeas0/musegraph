@@ -19,12 +19,12 @@ export async function getSpotifyData(artist: string): Promise<SpotifyData | null
     const items = artistRes.body.artists?.items;
     items?.sort((i1, i2) => i2.followers.total - i1.followers.total);
 
-    // Pick artist, that matches query exactly, otherwise pick the one with most followers
-    let spotArtist = artistRes.body.artists?.items.find(
+    // Pick artist, that matches query exactly
+    const spotArtist = artistRes.body.artists?.items.find(
         (i) => i.name.toLowerCase() === artist.toLowerCase()
     );
     if (spotArtist === undefined) {
-        spotArtist = artistRes.body.artists?.items[0];
+        return null;
     }
 
     const trackRes = await spotify.getArtistTopTracks(spotArtist.id, "GB");
