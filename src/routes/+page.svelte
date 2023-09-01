@@ -35,7 +35,7 @@
             artistStack.clear();
             artistStack.add(data);
             const session = await createSession($artistStack);
-            goto(`/session/${session.id}`);
+            goto(`/session/${session.id}/graph`);
         } catch (err) {
             console.error(err);
             toast("Could not get artist.", "error");
