@@ -2,6 +2,7 @@
     import ArtistCard from "./ArtistCard.svelte";
     import type { StackState } from "$lib/stores/ArtistStackStore";
     import type { ArtistSimilar } from "$lib/types/ArtistSimilar";
+    import { page } from "$app/stores";
 
     export let artistStack: StackState[];
 
@@ -19,7 +20,9 @@
         <div class="text-sm text-gray-700">
             Discovered artists: {discoveredCount}
         </div>
-        <a class="ml-auto underline" href="/playlist">Create playlist</a>
+        <a class="ml-auto underline" href={`/session/${$page.params.sessionId}/playlist`}>
+            Create playlist
+        </a>
     </div>
     <div class="border-y-2 py-1">
         <ArtistCard artist={currentArtist.artist} />

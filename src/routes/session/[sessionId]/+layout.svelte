@@ -1,5 +1,4 @@
 <script lang="ts">
-    import ArtistHeader from "$lib/components/ArtistHeader.svelte";
     import TopNav from "$lib/components/TopNav.svelte";
     import { SESSION_CONTEXT_KEY } from "$lib/constants";
     import { createSessionStore } from "$lib/stores/SessionStore";
@@ -18,6 +17,5 @@
 
 <TopNav />
 <main class="flex h-screen flex-col items-center p-4">
-    <ArtistHeader artistStack={$sessionStore} />
     <slot />
 </main>

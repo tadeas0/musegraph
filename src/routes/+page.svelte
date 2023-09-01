@@ -6,7 +6,6 @@
     import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
     import { toast } from "$lib/notification";
     import { goto } from "$app/navigation";
-    import { artistStack } from "$lib/stores/ArtistStackStore";
 
     let artistName = "";
     let foundArtists: Artist[] = [];
@@ -32,10 +31,9 @@
         try {
             gettingArtist = true;
             const data = await fetchArtist(dbpediaUrl, fetch);
-            artistStack.clear();
-            artistStack.add(data);
-            const session = await createSession($artistStack);
-            goto(`/session/${session.id}/graph`);
+            const stack = [data];
+            const session = await createSession(stack);
+            goto(`/session/${session.id}/discover/graph`);
         } catch (err) {
             console.error(err);
             toast("Could not get artist.", "error");
