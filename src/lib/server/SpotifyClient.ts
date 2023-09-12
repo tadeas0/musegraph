@@ -77,16 +77,17 @@ export async function createPlaylist(
     );
     const searchRes = await Promise.all(searchProm);
 
-    const filteredRes = searchRes
-        .map((sr, i) => {
-            const query = artistNames[i];
-            const spotArtist = sr.body.artists?.items.find(
-                (i) => i.name.toLowerCase() === query.toLowerCase()
-            );
-            return spotArtist;
-        })
-        .toSorted((a1, a2) => (a2?.followers.total || 0) - (a1?.followers.total || 0))
-        .filter((s) => s !== undefined) as SpotifyApi.ArtistObjectFull[];
+    const mappedRes = searchRes.map((sr, i) => {
+        const query = artistNames[i];
+        const spotArtist = sr.body.artists?.items.find(
+            (i) => i.name.toLowerCase() === query.toLowerCase()
+        );
+        return spotArtist;
+    });
+    mappedRes.sort((a1, a2) => (a2?.followers.total || 0) - (a1?.followers.total || 0));
+    const filteredRes = mappedRes.filter(
+        (s) => s !== undefined
+    ) as SpotifyApi.ArtistObjectFull[];
 
     const topTracks = filteredRes.map((fr) => spotify.getArtistTopTracks(fr.id, "GB"));
     const tracksRes = await Promise.all(topTracks);
