@@ -1,5 +1,4 @@
 import { browser } from "$app/environment";
-import { fetchCurrentSpotifyUser } from "$lib/api";
 import type { SpotifyProfile } from "$lib/types/SpotifyProfile";
 import { writable } from "svelte/store";
 
@@ -12,7 +11,7 @@ export type SignedInUser = SpotifyProfile & { token: SpotifyToken };
 
 const SPOTIFY_USER_KEY = "spotifyUser";
 
-async function createUserStore() {
+export function createUserStore() {
     let user: SignedInUser | null = null;
     if (browser) {
         try {
@@ -24,9 +23,12 @@ async function createUserStore() {
                     expiration: new Date(parsed.token.expiration),
                     token: parsed.token.token
                 };
-
-                const profile = await fetchCurrentSpotifyUser(token.token, fetch);
-                user = { ...profile, token };
+                user = {
+                    displayName: parsed.displayName,
+                    token,
+                    url: parsed.url,
+                    image: parsed.image
+                };
             }
         } catch (err) {
             user = null;
@@ -45,4 +47,4 @@ async function createUserStore() {
     };
 }
 
-export const spotifyUserStore = await createUserStore();
+export const spotifyUserStore = createUserStore();

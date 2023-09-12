@@ -16,7 +16,7 @@ export async function fetchArtist(
     svelteFetch: SvelteFetch | undefined = undefined
 ): Promise<{ artist: Artist; similarArtists: Artist[] }> {
     const f = getFetchFn(svelteFetch);
-    const res = await f(`/api/artist/${btoa(artistUrl)}`);
+    const res = await f(`/api/artist/${encodeURIComponent(artistUrl)}`);
     if (!res.ok) {
         throw new Error("Could not fetch artist");
     }
