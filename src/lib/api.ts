@@ -2,6 +2,8 @@ import type { StackState } from "./stores/SessionStore";
 import type { Artist } from "./types/Artist";
 import type { Session } from "./types/Session";
 import type { SpotifyData } from "./types/SpotifyData";
+import type { SpotifyPlaylist } from "./types/SpotifyPlaylist";
+import type { SpotifyProfile } from "./types/SpotifyProfile";
 import type SvelteFetch from "./types/SvelteFetch";
 
 function getFetchFn(svelteFetch: SvelteFetch | undefined) {
@@ -33,6 +35,39 @@ export async function fetchSpotifyData(
     }
     const data = await res.json();
     return data;
+}
+
+export async function fetchCurrentSpotifyUser(
+    bearer: string,
+    svelteFetch: SvelteFetch | undefined = undefined
+): Promise<SpotifyProfile> {
+    const f = getFetchFn(svelteFetch);
+    const res = await f("/api/spotify/me", { headers: { Authorization: bearer } });
+    if (!res.ok) {
+        throw new Error("Could not get current Spotify user");
+    }
+    const data = await res.json();
+    return data;
+}
+
+export async function createPlaylist(
+    playlistName: string,
+    artists: string[],
+    bearer: string,
+    svelteFetch: SvelteFetch | undefined = undefined
+): Promise<SpotifyPlaylist> {
+    const f = getFetchFn(svelteFetch);
+    const res = await f("/api/spotify/playlist", {
+        headers: { Authorization: bearer },
+        body: JSON.stringify({ name: playlistName, artists }),
+        method: "POST"
+    });
+
+    if (!res.ok) {
+        throw new Error("Could not create playlist");
+    }
+
+    return await res.json();
 }
 
 export async function fetchArtistsByName(
