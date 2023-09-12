@@ -51,7 +51,11 @@ export async function getArtistsByName(name: string, limit = 10): Promise<Artist
     const res = await sendQuery(
         `SELECT DISTINCT ?artist ?name ?genreName
             WHERE {
-				?s dbo:artist|dbp:artist ?artist.
+				{
+                    ?s dbo:artist|dbp:artist ?artist.
+                } UNION {
+                    ?artist a dbo:Band.
+                }
 				?artist dbp:name ?name.
                 OPTIONAL {
                     ?artist dbo:genre ?genre.
