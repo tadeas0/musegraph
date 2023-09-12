@@ -7,9 +7,11 @@
     import { createPlaylist } from "$lib/api";
     import { goto } from "$app/navigation";
     import { spotifyUserStore } from "$lib/stores/SpotifyProfileStore";
+    import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
 
     const sessionStore: SessionStore = getContext(SESSION_CONTEXT_KEY);
     let selectedArtists: string[] = [];
+    let loading = false;
 
     function filterDuplicateArtists(artistStack: ArtistSimilar[]) {
         return artistStack.filter(
@@ -26,22 +28,29 @@
     }
 
     async function handleSubmit(event: SubmitEvent) {
-        const formData = new FormData(event.target as HTMLFormElement);
-        const artists = formData.getAll("artists").map((d) => d.toString());
-        const name = formData.get("name");
-        if (name === null || name.toString() === "") {
-            toast("Missing playlist name", "error");
-        } else if (artists.length === 0) {
-            toast("No artists selected", "error");
-        } else if ($spotifyUserStore) {
-            const playlist = await createPlaylist(
-                name.toString(),
-                artists,
-                $spotifyUserStore.token.token
-            );
-            goto(`./playlist/created?${new URLSearchParams({ ...playlist })}`);
-        } else {
-            toast("User not logged in", "error");
+        loading = true;
+        try {
+            const formData = new FormData(event.target as HTMLFormElement);
+            const artists = formData.getAll("artists").map((d) => d.toString());
+            const name = formData.get("name");
+            if (name === null || name.toString() === "") {
+                toast("Missing playlist name", "error");
+            } else if (artists.length === 0) {
+                toast("No artists selected", "error");
+            } else if ($spotifyUserStore) {
+                const playlist = await createPlaylist(
+                    name.toString(),
+                    artists,
+                    $spotifyUserStore.token.token
+                );
+                goto(`./playlist/created?${new URLSearchParams({ ...playlist })}`);
+            } else {
+                toast("User not logged in", "error");
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            loading = false;
         }
     }
 
@@ -54,6 +63,9 @@
     class="flex w-full flex-col items-center gap-8 lg:w-4/6"
     on:submit|preventDefault={handleSubmit}
 >
+    {#if loading}
+        <LoadingOverlay spinnerPosition="top" />
+    {/if}
     <div class="ml-auto flex w-36 flex-col items-stretch">
         <button class="rounded-md bg-blue-400 p-2 text-white" type="submit">
             Create playlist
