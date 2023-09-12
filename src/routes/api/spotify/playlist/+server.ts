@@ -18,7 +18,25 @@ export const POST: RequestHandler = async ({ request }) => {
             );
             return json(playlist);
         } catch (err) {
-            throw error(400, "could not create playlist");
+            if (
+                typeof err === "object" &&
+                err &&
+                "statusCode" in err &&
+                typeof err.statusCode === "number" &&
+                "body" in err &&
+                typeof err.body === "object" &&
+                err.body &&
+                "error" in err.body &&
+                typeof err.body.error === "object" &&
+                err.body.error &&
+                "message" in err.body.error &&
+                typeof err.body.error.message === "string" &&
+                err.body.error.message
+            ) {
+                throw error(err.statusCode, err.body.error.message);
+            } else {
+                throw error(500, "server error");
+            }
         }
     }
     throw error(400, "invalid json");
