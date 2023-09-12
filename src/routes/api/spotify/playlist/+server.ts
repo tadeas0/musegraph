@@ -35,6 +35,7 @@ export const POST: RequestHandler = async ({ request }) => {
             ) {
                 throw error(err.statusCode, err.body.error.message);
             } else {
+                console.error(err);
                 throw error(500, "server error");
             }
         }
