@@ -26,7 +26,6 @@
         fetchSpotifyData(artist.name, fetch)
             .then((data) => (spotifyData = data))
             .catch((e) => {
-                canPlay = false;
                 spotifyData = null;
             })
             .finally(() => (loading = false));
@@ -35,15 +34,13 @@
     const dispatch = createEventDispatcher();
 
     async function playPreview() {
-        if (!canPlay) return;
-
         $playingAudio?.pause();
         if ($playingAudio && $playingAudio === audio) {
             $playingAudio = null;
             return;
         }
 
-        if (!audio && spotifyData?.song) {
+        if (spotifyData?.song) {
             audio = new Audio(spotifyData.song.previewUrl);
             $playingAudio = audio;
             audio.play();

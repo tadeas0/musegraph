@@ -9,6 +9,7 @@
     import { getContext } from "svelte";
     import { SESSION_CONTEXT_KEY } from "$lib/constants";
     import type { SessionStore } from "$lib/stores/SessionStore";
+    import { stopAudio } from "$lib/stores/AudioStore";
 
     const DEFAULT_NODE_COLOR = colors.blue[400];
     const DISCOVERED_NODE_COLOR = colors.blue[200];
@@ -94,6 +95,7 @@
             console.error(err);
             toast("Could not get artist. Please try again.", "error");
         } finally {
+            stopAudio();
             loading = false;
         }
     }
