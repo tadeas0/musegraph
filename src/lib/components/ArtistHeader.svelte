@@ -1,17 +1,11 @@
 <script lang="ts">
     import ArtistCard from "./ArtistCard.svelte";
     import type { StackState } from "$lib/stores/SessionStore";
-    import type { ArtistSimilar } from "$lib/types/ArtistSimilar";
     import { page } from "$app/stores";
 
     export let artistStack: StackState[];
 
-    const PLACEHOLDER_ARTIST: ArtistSimilar = {
-        artist: { dbpediaUrl: "", genres: [], name: "artist" },
-        similarArtists: []
-    };
-
-    $: currentArtist = artistStack.at(-1) || PLACEHOLDER_ARTIST;
+    $: currentArtist = artistStack.at(-1);
     $: discoveredCount = new Set(artistStack.map((a) => a.artist.dbpediaUrl)).size;
 </script>
 
@@ -25,6 +19,8 @@
         </a>
     </div>
     <div class="border-y-2 py-1">
-        <ArtistCard artist={currentArtist.artist} />
+        {#if currentArtist}
+            <ArtistCard artist={currentArtist.artist} />
+        {/if}
     </div>
 </div>
