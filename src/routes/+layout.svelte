@@ -4,6 +4,17 @@
     import "../app.css";
     import { spotifyUserStore } from "$lib/stores/SpotifyProfileStore";
     import { fetchCurrentSpotifyUser } from "$lib/api";
+    import {
+        computePosition,
+        autoUpdate,
+        offset,
+        shift,
+        flip,
+        arrow
+    } from "@floating-ui/dom";
+    import { storePopup } from "@skeletonlabs/skeleton";
+
+    storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
     onMount(async () => {
         try {
