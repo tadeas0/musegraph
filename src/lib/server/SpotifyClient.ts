@@ -3,7 +3,7 @@ import {
     SPOTIFY_CLIENT_SECRET,
     SPOTIFY_REDIRECT_URI
 } from "$env/static/private";
-import { randInt } from "$lib/common";
+import { randInt, randomString } from "$lib/common";
 import type { Song } from "$lib/types/Song";
 import type { SpotifyData } from "$lib/types/SpotifyData";
 import type { SpotifyPlaylist } from "$lib/types/SpotifyPlaylist";
@@ -108,7 +108,7 @@ export async function createPlaylist(
 
 export function getAuthorizeUrl() {
     const redirectUri = SPOTIFY_REDIRECT_URI;
-    const state = "some-state-of-my-choice";
+    const state = randomString(16);
     const scope =
         "user-read-private user-read-email playlist-modify-public playlist-modify-private";
 
