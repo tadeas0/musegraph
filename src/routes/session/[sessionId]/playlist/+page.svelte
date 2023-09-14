@@ -48,7 +48,12 @@
                 toast("User not logged in", "error");
             }
         } catch (err) {
-            console.error(err);
+            if (err instanceof Error) {
+                toast(err.message, "error");
+            } else {
+                toast("Something went wrong", "error");
+                console.error(err);
+            }
         } finally {
             loading = false;
         }

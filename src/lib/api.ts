@@ -63,8 +63,10 @@ export async function createPlaylist(
         method: "POST"
     });
 
-    if (!res.ok) {
-        throw new Error("Could not create playlist");
+    if (!res.ok && res.status === 403) {
+        throw new Error("User is not part of beta testing. Could not create playlist.");
+    } else if (!res.ok) {
+        throw new Error("Could not create playlist.");
     }
 
     return await res.json();

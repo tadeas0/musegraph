@@ -22,6 +22,13 @@ export const POST: RequestHandler = async ({ request }) => {
                 typeof err === "object" &&
                 err &&
                 "statusCode" in err &&
+                err.statusCode === 403
+            ) {
+                throw error(403, "user not part of beta testing");
+            } else if (
+                typeof err === "object" &&
+                err &&
+                "statusCode" in err &&
                 typeof err.statusCode === "number" &&
                 "body" in err &&
                 typeof err.body === "object" &&
