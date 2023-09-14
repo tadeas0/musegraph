@@ -85,7 +85,7 @@
                 if (graphNode.alwaysShowLabel || globalScale > 2.5) {
                     ctx.textAlign = "center";
                     ctx.textBaseline = "middle";
-                    ctx.fillStyle = colors.black;
+                    ctx.fillStyle = colors.white;
                     ctx.fillText(label, x, y - 24 / globalScale);
                 }
             })
@@ -100,6 +100,7 @@
             .linkDirectionalArrowLength(2)
             .linkDirectionalArrowRelPos(0.75)
             .graphData({ nodes: nodes, links: edges })
+            .linkColor(() => colors.gray[500])
             .onEngineStop(() => {
                 if (!selectedNode) return;
                 graph?.centerAt(selectedNode.x, selectedNode.y, 1000);
@@ -133,9 +134,11 @@
 </script>
 
 <div
-    class="absolute left-1/2 top-4 z-10 flex w-64 -translate-x-1/2 items-center gap-8 text-gray-600"
+    class="btn-group variant-ghost-primary absolute left-1/2 top-4 z-10 flex w-64 -translate-x-1/2"
 >
-    <button on:click={() => handleZoom(1 / ZOOM_AMOUNT)}><MdZoomIn /></button>
+    <button on:click={() => handleZoom(1 / ZOOM_AMOUNT)}>
+        <MdZoomIn />
+    </button>
     <button on:click={() => handleZoom(ZOOM_AMOUNT)}><MdZoomOut /></button>
     <button on:click={handleReset}><TiArrowSync /></button>
     <button on:click={handleFit}><MdFilterCenterFocus /></button>

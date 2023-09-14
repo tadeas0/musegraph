@@ -3,7 +3,6 @@
     import type { Artist } from "$lib/types/Artist";
     import Graph, { type GraphEdge, type GraphNode } from "$lib/components/Graph.svelte";
     import type { ArtistSimilar } from "$lib/types/ArtistSimilar";
-    import colors from "tailwindcss/colors";
     import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
     import { toast } from "$lib/notification";
     import { getContext } from "svelte";
@@ -11,9 +10,9 @@
     import type { SessionStore } from "$lib/stores/SessionStore";
     import { stopAudio } from "$lib/stores/AudioStore";
 
-    const DEFAULT_NODE_COLOR = colors.blue[400];
-    const DISCOVERED_NODE_COLOR = colors.blue[200];
-    const SELECTED_NODE_COLOR = colors.amber[300];
+    const DEFAULT_NODE_COLOR = "#4f46e5";
+    const DISCOVERED_NODE_COLOR = "#0ea5e9";
+    const SELECTED_NODE_COLOR = "#0fba81";
 
     let selectedNodeId: string | null = null;
     let nodes: GraphNode<Artist>[] = [];
@@ -101,16 +100,18 @@
     }
 </script>
 
-<div class="relative w-full flex-auto">
-    {#if loading}
-        <LoadingOverlay />
-    {/if}
-    <Graph
-        {nodes}
-        {edges}
-        {selectedNodeId}
-        on:nodeClick={(n) => {
-            handleArtistClick(n.detail.data);
-        }}
-    />
+<div class="mt-2 border-secondary-500">
+    <div class="relative h-[80vh] w-full rounded-md border-2 border-primary-600">
+        {#if loading}
+            <LoadingOverlay />
+        {/if}
+        <Graph
+            {nodes}
+            {edges}
+            {selectedNodeId}
+            on:nodeClick={(n) => {
+                handleArtistClick(n.detail.data);
+            }}
+        />
+    </div>
 </div>
