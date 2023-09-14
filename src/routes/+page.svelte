@@ -1,7 +1,6 @@
 <script lang="ts">
-    import type { Artist } from "$lib/types/Artist";
     import MdSearch from "svelte-icons/md/MdSearch.svelte";
-    import MdAutorenew from "svelte-icons/md/MdAutorenew.svelte";
+    import MdArrowForward from "svelte-icons/md/MdArrowForward.svelte";
     import { createSession, fetchArtist, fetchArtistsByName } from "$lib/api";
     import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
     import { toast } from "$lib/notification";
@@ -9,26 +8,12 @@
     import { goto } from "$app/navigation";
     import SpotifyProfile from "$lib/components/SpotifyProfile.svelte";
     import { spotifyUserStore } from "$lib/stores/SpotifyProfileStore";
+    import type { ActionData } from "./$types";
+    import { enhance } from "$app/forms";
 
-    let artistName = "";
-    let foundArtists: Artist[] = [];
-    let loading = false;
+    export let form: ActionData;
+
     let gettingArtist = false;
-
-    async function search() {
-        try {
-            loading = true;
-            const data = await fetchArtistsByName(artistName, fetch);
-            foundArtists = data.artists;
-            if (foundArtists.length === 0) {
-                toast("Could not find any artists matching your query.", "warn");
-            }
-        } catch (err) {
-            toast("Error while searching for artists. Please try again.", "error");
-        } finally {
-            loading = false;
-        }
-    }
 
     async function handleNavigate(dbpediaUrl: string) {
         try {
@@ -46,63 +31,63 @@
     }
 </script>
 
-<div class="relative flex flex-col items-center">
+<div class="relative flex flex-col items-center p-2">
+    <a href="/" class="gradient-heading h1 mb-8 font-bold">MuseGraph</a>
     {#if gettingArtist}
         <LoadingOverlay />
     {/if}
-    <div class="mt-8 flex h-16 flex-col items-center">
+    <div class="h-16">
         {#if $spotifyUserStore}
-            <div>
-                <SpotifyProfile
-                    on:logout={() => ($spotifyUserStore = null)}
-                    profile={$spotifyUserStore}
-                />
-            </div>
+            <SpotifyProfile
+                on:logout={() => ($spotifyUserStore = null)}
+                profile={$spotifyUserStore}
+            />
         {:else}
-            <a
-                href="/spotify/auth"
-                class="rounded-md bg-blue-600 p-2 leading-none text-white hover:bg-gray-700"
-            >
-                <span class="mr-2 inline-block h-4 w-4"><FaSpotify /></span>
-                Log in with spotify
-            </a>
-            <p class="mt-2 px-8 text-sm text-slate-700">
-                In order to create playlists, you need to log in with spotify.
-            </p>
+            <div class="card flex flex-col items-center gap-4 p-4">
+                <p>In order to create playlists, you need to log in with spotify.</p>
+                <a href="/spotify/auth" class="btn variant-filled-primary">
+                    <span class="w-4"><FaSpotify /></span>
+                    <span>Log in with spotify</span>
+                </a>
+            </div>
         {/if}
     </div>
-    <div class="mt-20 max-w-5xl">
-        <form on:submit={search} class="flex flex-row">
+    <div class="mt-20">
+        <form
+            class="input-group input-group-divider grid-cols-[auto_1fr_auto]"
+            method="POST"
+            use:enhance
+        >
+            <div class="input-group-shim"><span class="w-6"><MdSearch /></span></div>
             <input
-                class="rounded-l-md border-2 border-blue-400 p-2 outline-none disabled:border-gray-400"
-                placeholder="Artist"
-                bind:value={artistName}
-                disabled={loading}
+                type="search"
+                id="query"
+                name="query"
+                class={form?.error && "input-error"}
+                placeholder="Search..."
             />
-            <button
-                class:bg-blue-500={!loading}
-                class:bg-gray-500={loading}
-                class="w-12 rounded-r-md p-2 text-white hover:bg-gray-700"
-                type="submit"
-                disabled={loading}
-            >
-                {#if loading}
-                    <div class="animate-spin">
-                        <MdAutorenew />
-                    </div>
-                {:else}
-                    <MdSearch />
-                {/if}
-            </button>
+            <button class="variant-filled-secondary">Submit</button>
         </form>
-        <div>
-            {#each foundArtists as a}
-                <div class="border-b-2 border-blue-200 p-4">
-                    <button on:click={() => handleNavigate(a.dbpediaUrl)}>
-                        {a.name}
-                    </button>
-                </div>
-            {/each}
-        </div>
+        {#if form?.artists?.length}
+            <div class="card mt-4 p-1">
+                <nav class="list-nav">
+                    <ul>
+                        {#each form.artists as a}
+                            <li>
+                                <button
+                                    class="btn flex w-full justify-start"
+                                    on:click={() => handleNavigate(a.dbpediaUrl)}
+                                >
+                                    <span class="badge w-8 bg-primary-500">
+                                        <MdArrowForward />
+                                    </span>
+                                    <span>{a.name}</span>
+                                </button>
+                            </li>
+                        {/each}
+                    </ul>
+                </nav>
+            </div>
+        {/if}
     </div>
 </div>
