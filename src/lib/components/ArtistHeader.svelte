@@ -2,6 +2,7 @@
     import ArtistCard from "./ArtistCard.svelte";
     import type { StackState } from "$lib/stores/SessionStore";
     import { page } from "$app/stores";
+    import FaSpotify from "svelte-icons/fa/FaSpotify.svelte";
 
     export let artistStack: StackState[];
 
@@ -9,18 +10,22 @@
     $: discoveredCount = new Set(artistStack.map((a) => a.artist.dbpediaUrl)).size;
 </script>
 
-<div class="flex w-full flex-col lg:w-2/3">
-    <div class="flex w-full py-1 text-sm">
-        <div class="text-sm text-gray-700">
-            Discovered artists: {discoveredCount}
+<div class="flex w-full flex-col gap-2">
+    <div class="flex w-full items-end">
+        <div>
+            <span class="badge variant-outline-primary">
+                Discovered artists: {discoveredCount}
+            </span>
         </div>
-        <a class="ml-auto underline" href={`/session/${$page.params.sessionId}/playlist`}>
-            Create playlist
+        <a
+            class="btn variant-ghost-primary ml-auto"
+            href={`/session/${$page.params.sessionId}/playlist`}
+        >
+            <span class="w-6"><FaSpotify /></span>
+            <span>Create playlist</span>
         </a>
     </div>
-    <div class="border-y-2 py-1">
-        {#if currentArtist}
-            <ArtistCard artist={currentArtist.artist} />
-        {/if}
-    </div>
+    {#if currentArtist}
+        <ArtistCard artist={currentArtist.artist} />
+    {/if}
 </div>

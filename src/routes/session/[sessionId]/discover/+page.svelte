@@ -1,5 +1,4 @@
 <script lang="ts">
-    import ArtistCard from "$lib/components/ArtistCard.svelte";
     import type { Artist } from "$lib/types/Artist";
     import { stopAudio } from "$lib/stores/AudioStore";
     import { fly } from "svelte/transition";
@@ -10,6 +9,7 @@
     import { getContext } from "svelte";
     import type { SessionStore } from "$lib/stores/SessionStore";
     import { SESSION_CONTEXT_KEY } from "$lib/constants";
+    import { Avatar } from "@skeletonlabs/skeleton";
 
     let loading = false;
 
@@ -34,7 +34,7 @@
 
 {#key currentArtist}
     <div
-        class="w-full lg:w-4/6"
+        class="w-full"
         in:fly={{
             x: 15,
             duration: 100,
@@ -53,12 +53,29 @@
                 {#if loading}
                     <LoadingOverlay spinnerPosition="top" />
                 {/if}
-                {#each currentArtist?.similarArtists || [] as a}
-                    <ArtistCard
-                        artist={a}
-                        on:clickArtist={(e) => handleArtistClick(e.detail)}
-                    />
-                {/each}
+                <nav class="list-nav">
+                    <dl class="list-dl">
+                        {#each currentArtist?.similarArtists || [] as a}
+                            <button
+                                on:click={() => handleArtistClick(a)}
+                                class="btn flex w-full justify-start"
+                            >
+                                <span>
+                                    <Avatar
+                                        width="w-10"
+                                        initials={a.name.replace(" ", "").slice(0, 2)}
+                                    />
+                                </span>
+                                <span class="flex flex-col items-start">
+                                    <dt>{a.name}</dt>
+                                    <dd class="text-sm text-tertiary-600">
+                                        {a.genres.slice(0, 2).join(", ")}
+                                    </dd>
+                                </span>
+                            </button>
+                        {/each}
+                    </dl>
+                </nav>
             </div>
         </div>
     </div>

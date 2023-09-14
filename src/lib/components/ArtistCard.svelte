@@ -8,7 +8,8 @@
     import { fetchSpotifyData } from "../api";
     import type { SpotifyData } from "../types/SpotifyData";
     import { goto } from "$app/navigation";
-    import LoadingOverlay from "./LoadingOverlay.svelte";
+    import { Avatar } from "@skeletonlabs/skeleton";
+    import { PLACEHOLDER_AVATAR_URL } from "$lib/constants";
 
     export let artist: Artist;
 
@@ -16,10 +17,6 @@
     let canPlay: boolean = true;
     let spotifyData: SpotifyData | null = null;
     let audio: HTMLAudioElement | null = null;
-    const maxGenresDisplay = 3;
-    const imagePlaceholder =
-        "https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_640.png";
-    $: displayGenres = artist.genres.slice(0, maxGenresDisplay).join(", ");
     $: playing = $playingAudio && $playingAudio === audio;
     $: {
         loading = true;
@@ -48,40 +45,18 @@
     }
 </script>
 
-<div class="hover:bg-slate-200 lg:px-3">
-    <div class="flex h-16 w-full items-center justify-start gap-6">
-        <div class="relative flex h-14 w-14 justify-center">
-            <button
-                disabled={spotifyData === null}
-                on:click={() => {
-                    if (spotifyData) {
-                        goto(spotifyData.artistUrl);
-                    }
-                }}
-            >
-                <img
-                    class="block h-auto w-full rounded-md"
-                    src={spotifyData?.image || imagePlaceholder}
-                    alt="artist"
-                />
-            </button>
-            {#if loading}
-                <LoadingOverlay />
-            {/if}
-        </div>
-        <button
-            class="w-full overflow-hidden py-3 text-left"
-            on:click={() => dispatch("clickArtist", artist)}
-        >
-            <div class="text-md overflow-ellipsis whitespace-nowrap">
-                {artist.name}
-            </div>
-            <div class="mt-1 text-xs text-slate-600">{displayGenres}</div>
-        </button>
+<div class="card variant-filled-surface p-4 md:max-w-md">
+    <Avatar
+        rounded="rounded-md"
+        width="w-24"
+        src={spotifyData?.image || PLACEHOLDER_AVATAR_URL}
+    />
+    <div class="flex items-center gap-4">
+        <h3 class="h3 font-semibold">{artist.name}</h3>
         <button
             disabled={!canPlay || spotifyData?.song === undefined}
-            class="col-span-1 w-10 rounded-md bg-blue-400 p-1 text-white shadow-md shadow-slate-500 outline-none disabled:bg-gray-400 disabled:shadow-none"
             on:click={playPreview}
+            class="btn btn-icon variant-filled-tertiary ml-auto p-2"
         >
             {#if playing}
                 <MdPause />
@@ -89,14 +64,16 @@
                 <MdPlayArrow />
             {/if}
         </button>
-        <a
-            class="w-10 rounded-md bg-blue-400 p-1.5 text-white shadow-md shadow-slate-500"
-            class:bg-gray-400={!loading && spotifyData === null}
-            class:shadow-none={!loading && spotifyData === null}
-            href={spotifyData?.artistUrl}
-            target="_blank"
+        <button
+            disabled={spotifyData === null}
+            on:click={() => {
+                if (spotifyData) {
+                    goto(spotifyData.artistUrl);
+                }
+            }}
+            class="btn btn-icon variant-filled-primary p-2"
         >
             <FaSpotify />
-        </a>
+        </button>
     </div>
 </div>
