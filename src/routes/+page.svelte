@@ -13,11 +13,11 @@
 
     export let form: ActionData;
 
-    let gettingArtist = false;
+    let loading = false;
 
     async function handleNavigate(dbpediaUrl: string) {
         try {
-            gettingArtist = true;
+            loading = true;
             const data = await fetchArtist(dbpediaUrl, fetch);
             const stack = [data];
             const session = await createSession(stack);
@@ -26,15 +26,17 @@
             console.error(err);
             toast("Could not get artist.", "error");
         } finally {
-            gettingArtist = false;
+            loading = false;
         }
     }
 </script>
 
 <div class="relative flex flex-col items-center p-2">
     <a href="/" class="gradient-heading h1 mb-8 font-bold">MuseGraph</a>
-    {#if gettingArtist}
-        <LoadingOverlay />
+    {#if loading}
+        <div class="fixed bottom-0 left-0 right-0 top-0 z-20">
+            <LoadingOverlay />
+        </div>
     {/if}
     <div class="h-16">
         {#if $spotifyUserStore}
@@ -53,7 +55,13 @@
         <form
             class="input-group input-group-divider grid-cols-[auto_1fr_auto]"
             method="POST"
-            use:enhance
+            use:enhance={() => {
+                loading = true;
+                return async ({ update }) => {
+                    loading = false;
+                    await update();
+                };
+            }}
         >
             <div class="input-group-shim"><span class="w-6"><MdSearch /></span></div>
             <input
@@ -65,6 +73,9 @@
             />
             <button class="variant-filled-secondary">Submit</button>
         </form>
+        {#if form?.error}
+            <aside class="variant-ghost-error alert mt-4">{form?.error}</aside>
+        {/if}
         {#if form?.artists?.length}
             <div class="card mt-4 p-1">
                 <nav class="list-nav">

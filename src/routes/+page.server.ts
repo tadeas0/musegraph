@@ -11,6 +11,10 @@ export const actions: Actions = {
         }
 
         const artists = await getArtistsByName(query.toString());
+        if (artists.length <= 0) {
+            return fail(404, { error: "Did not find any artists with such name" });
+        }
+
         return { artists };
     }
 };

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Spinner from "./Spinner.svelte";
+    import { ProgressRadial } from "@skeletonlabs/skeleton";
 
     type SpinnerPosition = "top" | "bottom" | "center";
 
@@ -13,11 +13,15 @@
 </script>
 
 <div
-    class="absolute left-0 top-0 z-20 flex h-full w-full items-start justify-center bg-white bg-opacity-80"
+    class="absolute left-0 top-0 z-20 flex h-full w-full items-start justify-center bg-surface-900 bg-opacity-80"
 >
     <div
-        class={`absolute left-1/2 w-10 -translate-x-1/2 ${POSITION_CLASSES[spinnerPosition]}`}
+        class={`absolute left-1/2 -translate-x-1/2 ${POSITION_CLASSES[spinnerPosition]}`}
     >
-        <Spinner />
+        <ProgressRadial
+            stroke={50}
+            meter="stroke-primary-500"
+            track="stroke-primary-500/30"
+        />
     </div>
 </div>
