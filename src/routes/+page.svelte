@@ -1,15 +1,15 @@
 <script lang="ts">
     import MdSearch from "svelte-icons/md/MdSearch.svelte";
     import MdArrowForward from "svelte-icons/md/MdArrowForward.svelte";
-    import { createSession, fetchArtist, fetchArtistsByName } from "$lib/api";
+    import { createSession, fetchArtist } from "$lib/api";
     import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
     import { toast } from "$lib/notification";
-    import FaSpotify from "svelte-icons/fa/FaSpotify.svelte";
     import { goto } from "$app/navigation";
     import SpotifyProfile from "$lib/components/SpotifyProfile.svelte";
     import { spotifyUserStore } from "$lib/stores/SpotifyProfileStore";
     import type { ActionData } from "./$types";
     import { enhance } from "$app/forms";
+    import SpotifyLoginButton from "$lib/components/SpotifyLoginButton.svelte";
 
     export let form: ActionData;
 
@@ -45,10 +45,7 @@
         {:else}
             <div class="card flex flex-col items-center gap-4 p-4">
                 <p>In order to create playlists, you need to log in with spotify.</p>
-                <a href="/spotify/auth" class="btn variant-filled-primary">
-                    <span class="w-4"><FaSpotify /></span>
-                    <span>Log in with spotify</span>
-                </a>
+                <SpotifyLoginButton text="Log in with spotify" />
             </div>
         {/if}
     </div>
