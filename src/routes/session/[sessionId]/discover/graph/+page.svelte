@@ -5,11 +5,14 @@
     import type { ArtistSimilar } from "$lib/types/ArtistSimilar";
     import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
     import { toast } from "$lib/notification";
-    import { getContext } from "svelte";
+    import { getContext, onMount } from "svelte";
     import { SESSION_CONTEXT_KEY } from "$lib/constants";
     import type { SessionStore } from "$lib/stores/SessionStore";
     import { stopAudio } from "$lib/stores/AudioStore";
     import type { PageServerData } from "./$types";
+    import MdArrowDownward from "svelte-icons/md/MdArrowDownward.svelte";
+    import { fade, fly, slide } from "svelte/transition";
+    import { bounceIn, bounceOut } from "svelte/easing";
 
     export let data: PageServerData;
 
@@ -21,8 +24,30 @@
     let nodes: GraphNode<Artist>[] = [];
     let edges: GraphEdge<{}>[] = [];
     let loading = false;
+    let graphContainer: HTMLDivElement;
+    let observer: IntersectionObserver;
+    let showScrollButton: boolean = true;
 
     const sessionStore: SessionStore = getContext(SESSION_CONTEXT_KEY);
+
+    onMount(() => {
+        observer = new IntersectionObserver(onIntersection, {
+            root: null,
+            threshold: 1.0
+        });
+
+        function onIntersection(entries: IntersectionObserverEntry[]) {
+            entries.forEach((entry) => {
+                if (entry.intersectionRatio === 1) {
+                    showScrollButton = false;
+                } else {
+                    showScrollButton = true;
+                }
+            });
+        }
+
+        observer.observe(graphContainer);
+    });
 
     function artistsToGraph(
         artists: ArtistSimilar[]
@@ -104,7 +129,10 @@
 </script>
 
 <div class="mt-2 border-secondary-500">
-    <div class="relative h-[80vh] w-full rounded-md border-2 border-primary-600">
+    <div
+        bind:this={graphContainer}
+        class="relative h-[80vh] w-full rounded-md border-2 border-primary-600"
+    >
         {#if loading}
             <LoadingOverlay />
         {/if}
@@ -117,4 +145,16 @@
             }}
         />
     </div>
+    {#if showScrollButton}
+        <button
+            on:click={() => {
+                graphContainer.scrollIntoView({ behavior: "smooth" });
+            }}
+            class="btn-icon variant-glass-primary absolute bottom-4 left-1/2 -translate-x-1/2"
+            in:fly={{ y: -40, easing: bounceOut, duration: 500 }}
+            out:fly={{ y: -10, duration: 100 }}
+        >
+            <MdArrowDownward />
+        </button>
+    {/if}
 </div>
