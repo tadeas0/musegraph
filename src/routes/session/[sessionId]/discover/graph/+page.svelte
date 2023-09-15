@@ -4,15 +4,15 @@
     import Graph, { type GraphEdge, type GraphNode } from "$lib/components/Graph.svelte";
     import type { ArtistSimilar } from "$lib/types/ArtistSimilar";
     import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
-    import { toast } from "$lib/notification";
     import { getContext, onMount } from "svelte";
     import { SESSION_CONTEXT_KEY } from "$lib/constants";
     import type { SessionStore } from "$lib/stores/SessionStore";
     import { stopAudio } from "$lib/stores/AudioStore";
     import type { PageServerData } from "./$types";
     import MdArrowDownward from "svelte-icons/md/MdArrowDownward.svelte";
-    import { fade, fly, slide } from "svelte/transition";
-    import { bounceIn, bounceOut } from "svelte/easing";
+    import { fly } from "svelte/transition";
+    import { bounceOut } from "svelte/easing";
+    import { getToastStore } from "@skeletonlabs/skeleton";
 
     export let data: PageServerData;
 
@@ -29,6 +29,7 @@
     let showScrollButton: boolean = true;
 
     const sessionStore: SessionStore = getContext(SESSION_CONTEXT_KEY);
+    const toastStore = getToastStore();
 
     onMount(() => {
         observer = new IntersectionObserver(onIntersection, {
@@ -120,7 +121,10 @@
             }
         } catch (err) {
             console.error(err);
-            toast("Could not get artist. Please try again.", "error");
+            toastStore.trigger({
+                message: "Could not get artist. Please try again.",
+                background: "variant-filled-error"
+            });
         } finally {
             stopAudio();
             loading = false;

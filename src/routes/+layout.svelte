@@ -1,5 +1,4 @@
 <script>
-    import Toast from "$lib/components/Toast.svelte";
     import { onMount } from "svelte";
     import "../app.css";
     import { spotifyUserStore } from "$lib/stores/SpotifyProfileStore";
@@ -12,7 +11,10 @@
         flip,
         arrow
     } from "@floating-ui/dom";
-    import { storePopup } from "@skeletonlabs/skeleton";
+    import { Toast, storePopup } from "@skeletonlabs/skeleton";
+    import { initializeStores } from "@skeletonlabs/skeleton";
+
+    initializeStores();
 
     storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 

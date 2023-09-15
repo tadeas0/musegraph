@@ -10,10 +10,12 @@
     import type { ActionData } from "./$types";
     import { enhance } from "$app/forms";
     import SpotifyLoginButton from "$lib/components/SpotifyLoginButton.svelte";
+    import { getToastStore } from "@skeletonlabs/skeleton";
 
     export let form: ActionData;
 
     let loading = false;
+    const toastStore = getToastStore();
 
     async function handleNavigate(dbpediaUrl: string) {
         try {
@@ -24,7 +26,10 @@
             goto(`/session/${session.id}/discover/graph`);
         } catch (err) {
             console.error(err);
-            toast("Could not get artist.", "error");
+            toastStore.trigger({
+                message: "Could not get artist.",
+                background: "variant-filled-error"
+            });
         } finally {
             loading = false;
         }

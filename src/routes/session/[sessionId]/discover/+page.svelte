@@ -5,15 +5,15 @@
     import { quartOut } from "svelte/easing";
     import { fetchArtist } from "$lib/api";
     import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
-    import { toast } from "$lib/notification";
     import { getContext } from "svelte";
     import type { SessionStore } from "$lib/stores/SessionStore";
     import { SESSION_CONTEXT_KEY } from "$lib/constants";
-    import { Avatar } from "@skeletonlabs/skeleton";
+    import { Avatar, getToastStore } from "@skeletonlabs/skeleton";
 
     let loading = false;
 
     const sessionStore: SessionStore = getContext(SESSION_CONTEXT_KEY);
+    const toastStore = getToastStore();
 
     async function handleArtistClick(artist: Artist) {
         try {
@@ -23,7 +23,10 @@
             await sessionStore.add(data);
         } catch (err) {
             console.error(err);
-            toast("Could not get artist. Please try again.", "error");
+            toastStore.trigger({
+                message: "Could not get artist. Please try again.",
+                background: "variant-filled-error"
+            });
         } finally {
             loading = false;
         }
