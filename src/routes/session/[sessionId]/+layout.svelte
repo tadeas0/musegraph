@@ -32,7 +32,7 @@
                 <a href={`/session/${$page.params.sessionId}/discover`} class="w-7">
                     <MdFormatListBulleted />
                 </a>
-                <a href="/" class="w-7"><MdSearch /></a>
+                <a href="/search" class="w-7"><MdSearch /></a>
             </svelte:fragment>
         </AppBar>
     </svelte:fragment>
