@@ -4,6 +4,9 @@
     import { fetchCurrentSpotifyUser } from "$lib/api";
     import { spotifyUserStore } from "$lib/stores/SpotifyProfileStore";
     import { onMount } from "svelte";
+    import type { PageServerData } from "./$types";
+
+    export let data: PageServerData;
 
     onMount(async () => {
         const sp = new URLSearchParams($page.url.hash.slice(1));
@@ -18,6 +21,6 @@
             $spotifyUserStore = null;
         }
 
-        goto("/");
+        goto(data.redirectUrl);
     });
 </script>
