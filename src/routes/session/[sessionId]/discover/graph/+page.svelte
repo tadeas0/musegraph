@@ -9,10 +9,13 @@
     import { SESSION_CONTEXT_KEY } from "$lib/constants";
     import type { SessionStore } from "$lib/stores/SessionStore";
     import { stopAudio } from "$lib/stores/AudioStore";
+    import type { PageServerData } from "./$types";
 
-    const DEFAULT_NODE_COLOR = "#4f46e5";
-    const DISCOVERED_NODE_COLOR = "#0ea5e9";
-    const SELECTED_NODE_COLOR = "#0fba81";
+    export let data: PageServerData;
+
+    const DEFAULT_NODE_COLOR = data.colors.secondary;
+    const DISCOVERED_NODE_COLOR = data.colors.tertiary;
+    const SELECTED_NODE_COLOR = data.colors.primary;
 
     let selectedNodeId: string | null = null;
     let nodes: GraphNode<Artist>[] = [];
