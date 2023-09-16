@@ -73,7 +73,7 @@
                 id="query"
                 name="query"
                 class={form?.error && "input-error"}
-                placeholder="Search..."
+                placeholder="Search artist..."
             />
             <button class="variant-filled-secondary">Submit</button>
         </form>
