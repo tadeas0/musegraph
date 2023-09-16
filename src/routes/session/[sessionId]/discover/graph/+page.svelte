@@ -4,14 +4,11 @@
     import Graph, { type GraphEdge, type GraphNode } from "$lib/components/Graph.svelte";
     import type { ArtistSimilar } from "$lib/types/ArtistSimilar";
     import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
-    import { getContext, onMount } from "svelte";
+    import { getContext } from "svelte";
     import { SESSION_CONTEXT_KEY } from "$lib/constants";
     import type { SessionStore } from "$lib/stores/SessionStore";
     import { stopAudio } from "$lib/stores/AudioStore";
     import type { PageServerData } from "./$types";
-    import MdArrowDownward from "svelte-icons/md/MdArrowDownward.svelte";
-    import { fly } from "svelte/transition";
-    import { bounceOut } from "svelte/easing";
     import { getToastStore } from "@skeletonlabs/skeleton";
 
     export let data: PageServerData;
@@ -25,30 +22,9 @@
     let edges: GraphEdge<{}>[] = [];
     let loading = false;
     let graphContainer: HTMLDivElement;
-    let observer: IntersectionObserver;
-    let showScrollButton: boolean = true;
 
     const sessionStore: SessionStore = getContext(SESSION_CONTEXT_KEY);
     const toastStore = getToastStore();
-
-    onMount(() => {
-        observer = new IntersectionObserver(onIntersection, {
-            root: null,
-            threshold: 1.0
-        });
-
-        function onIntersection(entries: IntersectionObserverEntry[]) {
-            entries.forEach((entry) => {
-                if (entry.intersectionRatio === 1) {
-                    showScrollButton = false;
-                } else {
-                    showScrollButton = true;
-                }
-            });
-        }
-
-        observer.observe(graphContainer);
-    });
 
     function artistsToGraph(
         artists: ArtistSimilar[]
@@ -149,16 +125,4 @@
             }}
         />
     </div>
-    {#if showScrollButton}
-        <button
-            on:click={() => {
-                graphContainer.scrollIntoView({ behavior: "smooth" });
-            }}
-            class="btn-icon variant-glass-primary absolute bottom-4 left-1/2 -translate-x-1/2"
-            in:fly={{ y: -40, easing: bounceOut, duration: 500 }}
-            out:fly={{ y: -10, duration: 100 }}
-        >
-            <MdArrowDownward />
-        </button>
-    {/if}
 </div>

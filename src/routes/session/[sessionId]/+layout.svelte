@@ -8,6 +8,7 @@
     import MdSearch from "svelte-icons/md/MdSearch.svelte";
     import MdFormatListBulleted from "svelte-icons/md/MdFormatListBulleted.svelte";
     import { page } from "$app/stores";
+    import ScrollButton from "$lib/components/ScrollButton.svelte";
 
     export let data: Session;
 
@@ -20,7 +21,7 @@
 </script>
 
 <AppShell slotPageContent="lg:px-64 md:px-32 p-2">
-    <svelte:fragment slot="header">
+    <svelte:fragment slot="pageHeader">
         <AppBar slotDefault="place-self-center" slotTrail="place-content-end">
             <svelte:fragment slot="lead">
                 <a href="/" class="gradient-heading h2 font-bold">MuseGraph</a>
@@ -37,4 +38,5 @@
         </AppBar>
     </svelte:fragment>
     <slot />
+    <ScrollButton />
 </AppShell>
